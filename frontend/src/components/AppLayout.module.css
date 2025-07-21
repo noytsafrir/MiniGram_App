@@ -1,0 +1,47 @@
+.appLayout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.appHeader {
+  position: fixed;
+  top: 0;
+  width: 98%;
+  height: 60px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+}
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f98282;     
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logoutButton:hover {
+  background-color: #e60000;
+  transform: translateY(-1px);
+}
+.appLogo {
+  height: auto;
+  max-height: 70px;
+  width: auto;
+  cursor: pointer;
+  object-fit: contain;
+}

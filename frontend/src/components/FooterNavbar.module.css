@@ -1,0 +1,27 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  z-index: 100;
+}
+
+.navItem {
+  color: #727171;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  color: #0983b4;
+}
+
+.active {
+  color: #0a4a93;
+  transform: scale(1.15);
+  border-bottom: 2px solid #0a4a93;
+}

@@ -1,0 +1,14 @@
+.container {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+.h1 {
+  text-align: center;
+}
+
+.postsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
