@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
+import prisma from '../prisma/client';
 
-interface AuthRequest extends Request {
-  user?: { id: number };
-}
+// interface AuthRequest extends Request {
+//   user?: { id: number };
+// }
 
-export const authenticate = (
-  req: AuthRequest,
+export const authenticate = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -20,8 +21,12 @@ export const authenticate = (
 
   try {
     const decoded = verifyToken(token) as { id: number };
-    req.user = { id: decoded.id }; // attach user to request
-    next(); // continue to the next middleware or route
+    const user= await prisma.user.findUnique({ where: { id: decoded.id },});
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+    req.user = user;
+    next(); 
   } catch (error) {
     return res.status(401).json({ error: 'Invalid token' });
   }

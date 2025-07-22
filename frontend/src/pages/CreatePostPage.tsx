@@ -1,20 +1,68 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AppLayout from "../components/AppLayout";
 import styles from "../styles/CreatePostPage.module.css";
+import axios from "../api/axios";
 
 const CreatePostPage: React.FC = () => {
-  const [images, setImages] = useState<File[]>([]);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [caption, setCaption] = useState("");
-  useEffect(() => {
-    return() => {
-      images.forEach((image) => URL.revokeObjectURL(URL.createObjectURL(image)));
-    };
-  }, [images]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    return () => {
+      photos.forEach((photo) =>
+        URL.revokeObjectURL(URL.createObjectURL(photo))
+      );
+    };
+  }, [photos]);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files).slice(0, 5);
-      setImages(selectedFiles);
+      const selectedFiles = Array.from(e.target.files);
+      const totalPhotos = photos.length + selectedFiles.length;
+      if (totalPhotos > 5) {
+        setError("You can upload up to 5 photos only.");
+        return;
+      }
+      setPhotos((prevphotos) => [...prevphotos, ...selectedFiles]);
+      setError(""); // Clear error if everything is fine
+    }
+  };
+
+  const handleDeleteImage = (indexToRemove: number) => {
+    setPhotos((prevPhotos) => prevPhotos.filter((_, i) => i !== indexToRemove));
+  };
+
+  const handleSubmit = async () => {
+    if (photos.length === 0) {
+      setError("Please upload at least one photo.");
+      return;
+    }
+
+    const formData = new FormData();
+    photos.forEach((photo) => formData.append("images", photo));
+    formData.append("caption", caption);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post("/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      alert("Post created successfully!");
+      // Reset form
+      setPhotos([]);
+      setCaption("");
+      navigate("/home"); 
+    } catch (err) {
+      console.error("Post creation failed:", err);
+      setError("Failed to create post. Please try again.");
     }
   };
 
@@ -23,7 +71,9 @@ const CreatePostPage: React.FC = () => {
       <div className={styles.header}>
         <button className={styles.cancel}>Cancel</button>
         <h2 className={styles.title}>Create Post</h2>
-        <button className={styles.post}>Post</button>
+        <button className={styles.post} onClick={handleSubmit}>
+          Post
+        </button>
       </div>
 
       <div className={styles.uploadBox}>
@@ -31,22 +81,31 @@ const CreatePostPage: React.FC = () => {
           type="file"
           accept="image/*"
           multiple
-          onChange={handleImageChange}
+          onChange={handlePhotoChange}
           className={styles.fileInput}
         />
+        {error && <p className={styles.error}>{error}</p>}
         <div className={styles.previewContainer}>
-          {images.length === 0 && (
-            <span className={styles.placeholder}>Upload Images (max 5)</span>
+          {photos.length === 0 && (
+            <span className={styles.placeholder}>Upload Photos (max 5)</span>
           )}
-          {images.length > 0 && (
-            <div className={styles.imageScroll}>
-              {images.map((image, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(image)}
-                  alt={`preview-${index}`}
-                  className={styles.previewImage}
-                />
+          {photos.length > 0 && (
+            <div className={styles.photoscroll}>
+              {photos.map((photo, index) => (
+                <div key={index} className={styles.imageBox}>
+                  <img
+                    src={URL.createObjectURL(photo)}
+                    alt={`preview-${index}`}
+                    className={styles.previewImage}
+                  />
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteImage(index)}
+                  >
+                    ×
+                  </button>
+                </div>
               ))}
             </div>
           )}
