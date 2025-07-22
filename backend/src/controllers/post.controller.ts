@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
+import { createPostSchema } from '../validators/postValidator';
+import { validateCreatePost } from '../middleware/validateCreatePost';
+
 
 export const createPost = async (req: Request, res: Response) => {
   try {
@@ -12,6 +15,11 @@ export const createPost = async (req: Request, res: Response) => {
 
     if (!req.files || !Array.isArray(req.files)) {
       return res.status(400).json({ error: "No images uploaded" });
+    }
+
+    const { error } = createPostSchema.validate({ caption });
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     const imagePaths = (req.files as Express.Multer.File[]).map((file) => {

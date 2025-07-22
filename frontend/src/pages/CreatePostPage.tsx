@@ -39,6 +39,8 @@ const CreatePostPage: React.FC = () => {
   const handleSubmit = async () => {
     if (photos.length === 0) {
       setError("Please upload at least one photo.");
+      //set buttom to disabled
+      
       return;
     }
 
@@ -56,7 +58,6 @@ const CreatePostPage: React.FC = () => {
       });
 
       alert("Post created successfully!");
-      // Reset form
       setPhotos([]);
       setCaption("");
       navigate("/home"); 
@@ -116,6 +117,7 @@ const CreatePostPage: React.FC = () => {
         className={styles.captionInput}
         placeholder="Write a caption..."
         value={caption}
+        maxLength={100}
         onChange={(e) => setCaption(e.target.value)}
       />
     </AppLayout>
