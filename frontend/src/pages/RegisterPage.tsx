@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-import styles from "../styles/LoginPage.module.css"; 
+import styles from "../styles/LoginPage.module.css";
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/authSlice';
+import { validateEmail, validatePassword } from "../utils/validation";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,16 +25,14 @@ const RegisterPage: React.FC = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>/?]).{10,}$/;
-    const isPasswordValid = passwordRegex.test(formData.password);
-    console.log(isPasswordValid);
-    if (!isPasswordValid) {
-      alert("Password must be at least 10 characters long and include uppercase, lowercase, numbers, and special characters.");
+    const { isValid, normalized, error } = validateEmail(formData.email);
+    if (!isValid) {
+      alert(error || "Invalid email.");
       return;
     }
+    const { isValid: isPasswordValid, error: passwordError } = validatePassword(formData.password);
     if (!isPasswordValid) {
-      alert("Passwords do not match");
+      alert(passwordError);
       return;
     }
 
@@ -43,6 +42,8 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
+      const signupData = { ...formData, email: normalized };
+
       const response = await axios.post("/auth/signup", formData);
       alert("Registration successful!");
 
@@ -60,7 +61,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <img className={styles.logo} src="/minigram-logo.png" alt="Minigram Logo"/>
+        <img className={styles.logo} src="/minigram-logo.png" alt="Minigram Logo" />
         <h2 className={styles.title}>Sign Up</h2>
         <form className={styles.form} onSubmit={handleSignup}>
           <input

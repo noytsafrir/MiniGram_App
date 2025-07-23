@@ -5,8 +5,6 @@ import { validateCreatePost } from '../middleware/validateCreatePost';
 
 
 export const createPost = async (req: Request, res: Response) => {
-    console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
 
   try {
     const { caption } = req.body;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./PostCard.module.css";
 import {
   FaHeart,
@@ -11,16 +11,6 @@ import {
 import { RawPostFromQuery } from "../pages/HomePage";
 
 interface PostCardProps {
-  // username: string;
-  // profileImage: string;
-  // timestamp: string;
-  // images: string[];
-  // caption: string;
-  // liked: boolean;
-  // saved: boolean;
-  // likes: number;
-  // comments: number;
-  // shares: number;
   post: RawPostFromQuery;
   onLike: () => void;
   onSave: () => void;
@@ -28,7 +18,19 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const { user, photos, caption } = post;
-  console.log("PostCard props:", post);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalImages = photos.length;
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalImages);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? totalImages - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -41,8 +43,32 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
 
       {/* Image carousel */}
       <div className={styles.imageWrapper}>
-        <img src={photos[0].imageUrl} alt="Post" className={styles.image} />
-        {/* left/right arrows */}
+        <img
+          src={photos[currentIndex].imageUrl}
+          alt={`Post image ${currentIndex + 1}`}
+          className={styles.image}
+        />
+
+        <div className={styles.carouselControls}>
+          <button
+            onClick={handlePrev}
+            className={`${styles.arrowLeft} ${currentIndex === 0 ? styles.disabledArrow : ""}`}
+            disabled={currentIndex === 0}>‹
+          </button>
+
+          <button
+            onClick={handleNext}
+            className={`${styles.arrowRight} ${currentIndex === totalImages - 1 ? styles.disabledArrow : ""}`}
+            disabled={currentIndex === totalImages - 1}>›
+          </button>
+        </div>
+
+        {totalImages > 1 && (
+          <div className={styles.positionIndicator}>
+            {currentIndex + 1} / {totalImages}
+          </div>
+        )}
+
       </div>
 
       {/* Actions */}
