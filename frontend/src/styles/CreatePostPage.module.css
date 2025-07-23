@@ -21,6 +21,11 @@
   cursor: pointer;
 }
 
+.post:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .uploadBox {
   display: flex;
   flex-direction: column;

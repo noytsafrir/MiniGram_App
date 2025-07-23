@@ -67,12 +67,18 @@ const CreatePostPage: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    setPhotos([]);
+    setCaption("");
+    navigate("/home");
+  };
+
   return (
     <AppLayout>
       <div className={styles.header}>
-        <button className={styles.cancel}>Cancel</button>
+        <button className={styles.cancel} onClick={handleCancel}>Cancel</button>
         <h2 className={styles.title}>Create Post</h2>
-        <button className={styles.post} onClick={handleSubmit}>
+        <button className={styles.post} onClick={handleSubmit} disabled={photos.length === 0}>
           Post
         </button>
       </div>
