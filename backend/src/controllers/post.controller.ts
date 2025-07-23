@@ -53,3 +53,28 @@ export const createPost = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await prisma.post.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profileImg: true,
+          },
+        },
+        photos: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("[Get All Posts]", error);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+}
