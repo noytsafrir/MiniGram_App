@@ -51,10 +51,10 @@
   overflow: hidden;
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+
   background-color: #fafafa;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .placeholder {
@@ -74,6 +74,12 @@
   position: relative;
   display: inline-block;
   margin-right: 10px;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .deleteButton {

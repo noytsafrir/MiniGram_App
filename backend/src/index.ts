@@ -2,12 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
 import postRoutes from './routes/post.routes';
-// import path from 'path';
+import path from 'path';
 
 dotenv.config();
 const app = express();
 
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
 app.use(express.json());

@@ -50,7 +50,7 @@ const CreatePostPage: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post("/posts", formData, {
+      await axios.post("/posts", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${token}`,
@@ -92,12 +92,12 @@ const CreatePostPage: React.FC = () => {
           className={styles.fileInput}
         />
         {error && <p className={styles.error}>{error}</p>}
-        <div className={styles.previewContainer}>
+        <div className={`${styles.previewContainer} ${photos.length === 0 ? styles.empty : ""}`}>
           {photos.length === 0 && (
             <span className={styles.placeholder}>Upload Photos (max 5)</span>
           )}
           {photos.length > 0 && (
-            <div className={styles.photoscroll}>
+            <>
               {photos.map((photo, index) => (
                 <div key={index} className={styles.imageBox}>
                   <img
@@ -114,7 +114,7 @@ const CreatePostPage: React.FC = () => {
                   </button>
                 </div>
               ))}
-            </div>
+            </>
           )}
         </div>
       </div>

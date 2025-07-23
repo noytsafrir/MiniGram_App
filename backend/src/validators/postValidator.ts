@@ -4,6 +4,7 @@ import xss from 'xss';
 export const createPostSchema = Joi.object({
   caption: Joi.string()
     .max(100)
+    .allow('')
     .optional()
     .custom((value, helpers) => {
       const sanitizedValue = xss(value);
