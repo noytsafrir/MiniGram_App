@@ -1,34 +1,12 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import styles from "../styles/HomePage.module.css";
 import { showConfetti } from "../utils/showConfetti";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { RawPostFromQuery } from "../interfaces/interfaces";
 import axios from "axios";
-
-export interface RawUser {
-  id: string;
-  username: string;
-  profileImg: string;
-}
-
-export interface RawPhoto {
-  id: string;
-  imageUrl: string;
-  postId: string;
-}
-
-export interface RawPostFromQuery {
-  id: string;
-  caption: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-
-  user: RawUser;
-  photos: RawPhoto[];
-}
 
 const HomePage: React.FC = () => {
   const [posts, setPosts] = useState<RawPostFromQuery[]>([]);
@@ -71,14 +49,18 @@ const HomePage: React.FC = () => {
           Welcome {firstName} {lastName}! 🎉
         </h1>
         <div className={styles.postsContainer}>
-          {posts.map((post) => (
+          {posts.length > 0 ? (
+            posts.map((post) => (
             <PostCard
               key={post.id}
               post={post}
               onLike={() => console.log("Like clicked")}
               onSave={() => console.log("Save clicked")}
             />
-          ))}
+          ))
+          ) : (
+            <p className={styles.noPostsMessage}>There are no posts yet.<br/> Be the first to share something!</p>
+          )}
         </div>
       </div>
     </AppLayout>

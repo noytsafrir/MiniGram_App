@@ -1,16 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  token: string | null;
-}
+import { User, AuthState } from '../interfaces/interfaces';
 
 const storedUser = localStorage.getItem('user');
 const storedToken = localStorage.getItem('token');

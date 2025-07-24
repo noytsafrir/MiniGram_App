@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch} from "react-redux";
+import { addPost } from "../redux/postSlice";
+import { AppDispatch } from "../redux/store";
 import AppLayout from "../components/AppLayout";
 import styles from "../styles/CreatePostPage.module.css";
 import axios from "../api/axios";
@@ -9,7 +12,7 @@ const CreatePostPage: React.FC = () => {
   const [caption, setCaption] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     return () => {
@@ -28,7 +31,7 @@ const CreatePostPage: React.FC = () => {
         return;
       }
       setPhotos((prevphotos) => [...prevphotos, ...selectedFiles]);
-      setError(""); // Clear error if everything is fine
+      setError(""); 
     }
   };
 
@@ -38,9 +41,7 @@ const CreatePostPage: React.FC = () => {
 
   const handleSubmit = async () => {
     if (photos.length === 0) {
-      setError("Please upload at least one photo.");
-      //set buttom to disabled
-      
+      setError("Please upload at least one photo.");      
       return;
     }
 
@@ -50,12 +51,16 @@ const CreatePostPage: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post("/posts", formData, {
+      const response= await axios.post("/posts", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${token}`,
         },
       });
+
+      if (response.data && response.data.post) {
+        dispatch(addPost(response.data.post));
+      }
 
       alert("Post created successfully!");
       setPhotos([]);

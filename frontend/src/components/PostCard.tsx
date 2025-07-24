@@ -8,18 +8,14 @@ import {
   FaBookmark,
   FaRegBookmark,
 } from "react-icons/fa";
-import { RawPostFromQuery } from "../pages/HomePage";
-
-interface PostCardProps {
-  post: RawPostFromQuery;
-  onLike: () => void;
-  onSave: () => void;
-}
+import { PostCardProps } from "../interfaces/interfaces";
+import moment from "moment";
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const { user, photos, caption } = post;
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalImages = photos.length;
+  const timeAgo = moment(post.createdAt).fromNow();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % totalImages);
@@ -34,10 +30,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <img src={user.profileImg} alt="profile" className={styles.avatar} />
-        <div>
+        {user.profileImg ? (
+          <img src={user.profileImg} alt="profile" className={styles.avatar} />
+        ) : (
+          <div className={styles.defaultAvatar}>
+            {user.username.charAt(0).toUpperCase()}
+          </div>
+        )}        <div>
           <div className={styles.username}>{user.username}</div>
-          <div className={styles.timestamp}>{post.createdAt}</div>
+          <div className={styles.timestamp}>{timeAgo}</div>
         </div>
       </div>
 
