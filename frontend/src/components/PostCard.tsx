@@ -10,15 +10,16 @@ import {
 } from "react-icons/fa";
 import { PostCardProps } from "../interfaces/interfaces";
 import { useDispatch } from "react-redux";
-import { setLikeStatusForPost } from "../redux/postSlice";
+import { setLikeStatusForPost, setSaveStatusForPost } from "../redux/postSlice";
 import moment from "moment";
 import axios from "../api/axios";
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const { user, photos, caption } = post;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const isLiked = post.isLiked;
   const likes = post.likes;
+  const isLiked = post.isLiked;
+  const isSaved = post.isSaved;
   const totalImages = photos.length;
   const timeAgo = moment(post.createdAt).fromNow();
   const dispatch = useDispatch();
@@ -36,8 +37,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const handleLikeClick = async () => {
     const token = localStorage.getItem("token");
     const newLikedState = !isLiked;
-
     dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
+
     try {
       await axios.put(`/posts/post/${post.id}/like`,
         { isLiked: newLikedState },
@@ -50,6 +51,24 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
     } catch (err) {
       console.error("Failed to toggle like:", err);
       dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
+    }
+  };
+
+  const handleSaveClick = async () => {
+    const token = localStorage.getItem("token");
+    const newSaveState = !isSaved;
+    dispatch(setSaveStatusForPost({ postId: post.id, isSaved: newSaveState }));
+
+    try {
+      await axios.put(`/posts/post/${post.id}/save`,
+        { isSaved: newSaveState }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      onSave();
+    } catch (err) {
+      console.error("Failed to save post:", err);
     }
   };
 
@@ -118,11 +137,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
           <FaPaperPlane />
         </div>
 
-        <span onClick={onSave} style={{ marginLeft: "auto" }}>
-          {
-            // TODO: Replace with actual save state
-          }
-          {true ? <FaBookmark /> : <FaRegBookmark />}
+        <span onClick={handleSaveClick} style={{ marginLeft: "auto" }}>
+          {isSaved ? <FaBookmark color="dodgerblue" /> : <FaRegBookmark />}
         </span>
       </div>
 

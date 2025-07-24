@@ -20,11 +20,18 @@ const postSlice = createSlice({
         post.isLiked = isLiked;
         post.likes += isLiked ? 1 : -1;
       }
+    },
+    setSaveStatusForPost: (state, action) => {
+      const { postId, isSaved } = action.payload;
+      const post = state.posts.find(post => post.id === postId);
+      if (post) {
+        post.isSaved = isSaved;
+      }
     }
   },
 });
 
-export const { setPosts, setLikeStatusForPost } = postSlice.actions;
+export const { setPosts, setLikeStatusForPost, setSaveStatusForPost } = postSlice.actions;
 export default postSlice.reducer;
 
 

@@ -20,6 +20,7 @@ export interface RawPostFromQuery {
   photos: RawPhoto[];
   likes: number;
   isLiked: boolean;
+  isSaved: boolean;
 }
 
 export interface PostCardProps {
