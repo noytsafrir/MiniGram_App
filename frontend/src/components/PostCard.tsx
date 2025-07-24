@@ -94,21 +94,28 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
           alt={`Post image ${currentIndex + 1}`}
           className={styles.image}
         />
-
-        <div className={styles.carouselControls}>
-          <button
-            onClick={handlePrev}
-            className={`${styles.arrowLeft} ${currentIndex === 0 ? styles.disabledArrow : ""}`}
-            disabled={currentIndex === 0}>‹
-          </button>
-
-          <button
-            onClick={handleNext}
-            className={`${styles.arrowRight} ${currentIndex === totalImages - 1 ? styles.disabledArrow : ""}`}
-            disabled={currentIndex === totalImages - 1}>›
-          </button>
-        </div>
-
+        {totalImages > 1 && (
+          <div className={styles.carouselControls}>
+            <div className={styles.arrowLeft}>
+              {currentIndex > 0 && (
+                <button
+                  onClick={handlePrev}
+                // className={`${styles.arrowLeft} ${currentIndex === 0 ? styles.disabledArrow : ""}`}
+                >‹
+                </button>
+              )}
+            </div>
+            <div className={styles.arrowRight}>
+              {currentIndex < totalImages - 1 && (
+                <button
+                  onClick={handleNext}
+                // className={`${styles.arrowRight} ${currentIndex === totalImages - 1 ? styles.disabledArrow : ""}`}
+                >›
+                </button>
+              )}
+            </div>
+          </div>
+        )}
         {totalImages > 1 && (
           <div className={styles.positionIndicator}>
             {currentIndex + 1} / {totalImages}

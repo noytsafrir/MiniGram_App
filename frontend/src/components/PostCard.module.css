@@ -69,18 +69,24 @@
   transform: translateY(-50%);
   padding: 0 10px;
   z-index: 2;
+  pointer-events: none;
 }
 
 .arrowLeft, .arrowRight {
-  background: rgba(0, 0, 0, 0.3);
-  border: none;
+  pointer-events: auto;
   font-size: 24px;
   color: white;
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 50%;
-  box-shadow: 0 0 4px rgba(0,0,0,0.5);
-  pointer-events: all;
+}
+.arrowLeft button,
+.arrowRight button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: white; /* or any color you like */
 }
 
 .disabledArrow {
