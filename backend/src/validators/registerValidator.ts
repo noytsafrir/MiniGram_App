@@ -7,3 +7,4 @@ export const registerSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required().xss(),
   lastName: Joi.string().min(2).max(50).required().xss(),
 });
+

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch} from "react-redux";
-import { addPost } from "../redux/postSlice";
+// import { addPost } from "../redux/postSlice";
 import { AppDispatch } from "../redux/store";
 import AppLayout from "../components/AppLayout";
 import styles from "../styles/CreatePostPage.module.css";
@@ -12,7 +12,7 @@ const CreatePostPage: React.FC = () => {
   const [caption, setCaption] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     return () => {
@@ -58,9 +58,9 @@ const CreatePostPage: React.FC = () => {
         },
       });
 
-      if (response.data && response.data.post) {
-        dispatch(addPost(response.data.post));
-      }
+      // if (response.data && response.data.post) {
+      //   dispatch(addPost(response.data.post));
+      // }
 
       alert("Post created successfully!");
       setPhotos([]);

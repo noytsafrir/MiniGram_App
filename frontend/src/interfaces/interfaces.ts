@@ -16,31 +16,22 @@ export interface RawPostFromQuery {
   createdAt: string;
   updatedAt: string;
   userId: string;
-
   user: RawUser;
   photos: RawPhoto[];
+  likes: number;
+  isLiked: boolean;
 }
 
 export interface PostCardProps {
   post: RawPostFromQuery;
-  onLike: () => void;
+  isLiked?: boolean;
+  isSaved?: boolean;
+  onLike: (postId: string, shouldLike: boolean) => void;
   onSave: () => void;
 }
 
-export interface Post {
-  id: number;
-  caption?: string;
-  createdAt: string;
-  photos: { id: number; imageUrl: string; position: number }[];
-  user: {
-    id: number;
-    username: string;
-    profileImg: string;
-  };
-}
-
 export interface PostState {
-  posts: Post[];
+  posts: RawPostFromQuery[];
 }
 
 export interface User {

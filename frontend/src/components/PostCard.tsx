@@ -9,13 +9,19 @@ import {
   FaRegBookmark,
 } from "react-icons/fa";
 import { PostCardProps } from "../interfaces/interfaces";
+import { useDispatch } from "react-redux";
+import { setLikeStatusForPost } from "../redux/postSlice";
 import moment from "moment";
+import axios from "../api/axios";
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const { user, photos, caption } = post;
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isLiked = post.isLiked;
+  const likes = post.likes;
   const totalImages = photos.length;
   const timeAgo = moment(post.createdAt).fromNow();
+  const dispatch = useDispatch();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % totalImages);
@@ -25,6 +31,26 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? totalImages - 1 : prevIndex - 1
     );
+  };
+
+  const handleLikeClick = async () => {
+    const token = localStorage.getItem("token");
+    const newLikedState = !isLiked;
+
+    dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
+    try {
+      await axios.put(`/posts/post/${post.id}/like`,
+        { isLiked: newLikedState },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Failed to toggle like:", err);
+      dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
+    }
   };
 
   return (
@@ -74,17 +100,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
 
       {/* Actions */}
       <div className={styles.actions}>
-        <div className={styles.actionItem} onClick={onLike}>
-          {/* <span>{likes}</span> */}
-          {
-            //TODO: Replace with actual like count
-          }
-          <span>0</span>
-          {
-            //TODO: Replace with actual like count
-          }
-          {true ? <FaHeart color="red" /> : <FaRegHeart />}
+        <div className={styles.actionItem} onClick={handleLikeClick}>
+          <span>{likes}</span>
+          {isLiked ? <FaHeart color="red" /> : <FaRegHeart />}
         </div>
+
 
         <div className={styles.actionItem}>
           {/* <span>{comments}</span> */}

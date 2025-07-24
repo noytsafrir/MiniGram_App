@@ -3,13 +3,14 @@ import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import styles from "../styles/HomePage.module.css";
 import { showConfetti } from "../utils/showConfetti";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { RawPostFromQuery } from "../interfaces/interfaces";
+import { getPosts, setPosts } from "../redux/postSlice";
 import axios from "axios";
 
 const HomePage: React.FC = () => {
-  const [posts, setPosts] = useState<RawPostFromQuery[]>([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,8 +21,8 @@ const HomePage: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        setPosts(res.data);
+        dispatch(setPosts(res.data));
+        console.log("Posts fetched successfully:", res.data);
       } catch (error) {
         console.error("Failed to fetch posts:", error);
       }
@@ -38,8 +39,25 @@ const HomePage: React.FC = () => {
   }, []);
 
   const user = useSelector((state: RootState) => state.auth.user);
+  const posts = useSelector(getPosts);
   const firstName = user?.firstName;
   const lastName = user?.lastName;
+
+  // const handleLike = (postId: string, shouldLike: boolean) => {
+  //   setPosts((prevPosts) =>
+  //     prevPosts.map((post) =>
+  //       post.id === postId
+  //         ? { ...post, likes: post.likes + (shouldLike ? 1 : -1)} 
+  //         : post
+  //     )
+  //   );
+  //   console.log(`Liked post with ID: ${postId}`);
+  // };
+
+  const handleSave = (postId: string) => {
+    // Dispatch save action or handle save logic here
+    console.log(`Saved post with ID: ${postId}`);
+  };
 
   return (
     <AppLayout>
@@ -51,15 +69,16 @@ const HomePage: React.FC = () => {
         <div className={styles.postsContainer}>
           {posts.length > 0 ? (
             posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onLike={() => console.log("Like clicked")}
-              onSave={() => console.log("Save clicked")}
-            />
-          ))
+              <PostCard
+                key={post.id}
+                post={post}
+                // onLike={(postId, shouldLike) => handleLike(postId, shouldLike)}
+                onLike={(postId, shouldLike) => console.log(`Liked post with ID: ${postId}`)}
+                onSave={() => handleSave(post.id)}
+              />
+            ))
           ) : (
-            <p className={styles.noPostsMessage}>There are no posts yet.<br/> Be the first to share something!</p>
+            <p className={styles.noPostsMessage}>There are no posts yet.<br /> Be the first to share something!</p>
           )}
         </div>
       </div>

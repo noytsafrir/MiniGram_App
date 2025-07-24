@@ -13,9 +13,7 @@ const Joi = JoiBase.extend((joi) => ({
         return this.$_addRule({ name: "xss" });
       },
       validate(value, helpers) {
-        const sanitized = xss(value);
-        console.log("🔥 XSS Rule Running:", { original: value, sanitized });
-        
+        const sanitized = xss(value);        
         if (sanitized !== value) {
           return helpers.error("string.xss");
         }
