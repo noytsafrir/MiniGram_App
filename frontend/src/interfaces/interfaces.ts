@@ -1,7 +1,14 @@
-interface RawUser {
+export interface UserProfile {
   id: string;
   username: string;
   profileImg: string;
+  bio?: string;
+}
+
+export interface ProfileState {
+  user: UserProfile | null;
+  loading: boolean;
+  error: string | null;
 }
 
 interface RawPhoto {
@@ -16,7 +23,7 @@ export interface RawPostFromQuery {
   createdAt: string;
   updatedAt: string;
   userId: string;
-  user: RawUser;
+  user: UserProfile;
   photos: RawPhoto[];
   likes: number;
   isLiked: boolean;
@@ -33,6 +40,9 @@ export interface PostCardProps {
 
 export interface PostState {
   posts: RawPostFromQuery[];
+  userPosts: RawPostFromQuery[];
+  loading: boolean;
+  error: string | null;
 }
 
 export interface User {

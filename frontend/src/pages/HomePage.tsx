@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import styles from "../styles/HomePage.module.css";
 import { showConfetti } from "../utils/showConfetti";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { RawPostFromQuery } from "../interfaces/interfaces";
 import { getPosts, setPosts } from "../redux/postSlice";
 import axios from "axios";
 
@@ -43,19 +42,7 @@ const HomePage: React.FC = () => {
   const firstName = user?.firstName;
   const lastName = user?.lastName;
 
-  // const handleLike = (postId: string, shouldLike: boolean) => {
-  //   setPosts((prevPosts) =>
-  //     prevPosts.map((post) =>
-  //       post.id === postId
-  //         ? { ...post, likes: post.likes + (shouldLike ? 1 : -1)} 
-  //         : post
-  //     )
-  //   );
-  //   console.log(`Liked post with ID: ${postId}`);
-  // };
-
   const handleSave = (postId: string) => {
-    // Dispatch save action or handle save logic here
     console.log(`Saved post with ID: ${postId}`);
   };
 
@@ -72,8 +59,7 @@ const HomePage: React.FC = () => {
               <PostCard
                 key={post.id}
                 post={post}
-                // onLike={(postId, shouldLike) => handleLike(postId, shouldLike)}
-                onLike={(postId, shouldLike) => console.log(`Liked post with ID: ${postId}`)}
+                onLike={(postId) => console.log(`Liked post with ID: ${postId}`)}
                 onSave={() => handleSave(post.id)}
               />
             ))

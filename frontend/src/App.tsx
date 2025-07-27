@@ -6,10 +6,9 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import CreatePostPage from './pages/CreatePostPage';
+import UserProfilePage from './pages/UserProfilePage';
 
 const App: React.FC = () => {
-  // const token = localStorage.getItem('token');
-  // console.log("Token from localStorage:", token);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   return (
     <Router>
@@ -19,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />} />
         <Route path="/create" element={isAuthenticated ? <CreatePostPage /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />} />
 
       </Routes>
     </Router>

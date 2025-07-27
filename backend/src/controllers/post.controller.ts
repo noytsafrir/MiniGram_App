@@ -89,6 +89,28 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 }
 
+export const getUserPosts = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    const posts = await prisma.post.findMany({
+      where: { userId: userId },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        photos: true,
+      },
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("[Get User Posts Error]", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 export const toggleLikePost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId);
   const { isLiked } = req.body;

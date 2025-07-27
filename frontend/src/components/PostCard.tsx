@@ -81,7 +81,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
           <div className={styles.defaultAvatar}>
             {user.username.charAt(0).toUpperCase()}
           </div>
-        )}        <div>
+        )}
+        <div>
           <div className={styles.username}>{user.username}</div>
           <div className={styles.timestamp}>{timeAgo}</div>
         </div>
@@ -100,7 +101,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
               {currentIndex > 0 && (
                 <button
                   onClick={handlePrev}
-                // className={`${styles.arrowLeft} ${currentIndex === 0 ? styles.disabledArrow : ""}`}
                 >‹
                 </button>
               )}
@@ -109,7 +109,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
               {currentIndex < totalImages - 1 && (
                 <button
                   onClick={handleNext}
-                // className={`${styles.arrowRight} ${currentIndex === totalImages - 1 ? styles.disabledArrow : ""}`}
                 >›
                 </button>
               )}
