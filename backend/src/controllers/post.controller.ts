@@ -143,7 +143,6 @@ export const toggleLikePost = async (req: Request, res: Response) => {
   }
 };
 
-
 export const toggleSavePost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId);
   const { isSaved } = req.body;
