@@ -42,9 +42,10 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      const signupData = { ...formData, email: normalized };
+      const { confirmPassword, ...dataWithoutConfirm } = formData;
+      const signupData = { ...dataWithoutConfirm, email: normalized };
 
-      const response = await axios.post("/auth/signup", formData);
+      const response = await axios.post("/auth/signup", signupData);
       alert("Registration successful!");
 
       const { token, user } = response.data;

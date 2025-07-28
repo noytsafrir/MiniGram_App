@@ -38,6 +38,12 @@
 
 .username {
   font-weight: bold;
+  color: inherit;
+  text-decoration: none;
+}
+
+.username:hover {
+  text-decoration: underline;
 }
 
 .timestamp {

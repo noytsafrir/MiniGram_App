@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./PostCard.module.css";
 import {
   FaHeart,
@@ -75,15 +76,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        {user.profileImg ? (
-          <img src={user.profileImg} alt="profile" className={styles.avatar} />
-        ) : (
-          <div className={styles.defaultAvatar}>
-            {user.username.charAt(0).toUpperCase()}
-          </div>
-        )}
+        <Link to={`/users/${user.id}`}>
+          {user.profileImg ? (
+            <img src={user.profileImg} alt="profile" className={styles.avatar} />
+          ) : (
+            <div className={styles.defaultAvatar}>
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </Link>
         <div>
-          <div className={styles.username}>{user.username}</div>
+          <Link to={`/users/${user.id}`} className={styles.username}>
+            {user.username}
+          </Link>          
           <div className={styles.timestamp}>{timeAgo}</div>
         </div>
       </div>
@@ -133,13 +138,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
 
         <div className={styles.actionItem}>
           {/* <span>{comments}</span> */}
-          <span>0</span>
+          {/* <span>0</span> */}
           <FaRegComment />
         </div>
 
         <div className={styles.actionItem}>
           {/* <span>{shares}</span> */}
-          <span>0</span>
+          {/* <span>0</span> */}
           <FaPaperPlane />
         </div>
 

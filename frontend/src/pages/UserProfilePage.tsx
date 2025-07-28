@@ -15,6 +15,7 @@ const UserProfilePage: React.FC = () => {
     const [username, setUsername] = useState("");
     const [bio, setBio] = useState("");
     const [profileImg, setProfileImg] = useState<File | null>(null);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -69,7 +70,7 @@ const UserProfilePage: React.FC = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    console.error("No token found");
+                    setErrorMessage("You are not authenticated.");
                     return;
                 }
                 const res = await axios.put("/users/me", formData, {
@@ -81,8 +82,13 @@ const UserProfilePage: React.FC = () => {
                 dispatch(setUserProfile(res.data.user));
                 setEditMode(false);
                 setProfileImg(null);
-            } catch (error) {
-                console.error("Failed to update profile:", error);
+                setErrorMessage(""); // clear on success
+            } catch (error: any) {
+                if (axios.isAxiosError(error)) {
+                    setErrorMessage(error.response?.data?.message || "Failed to update profile.");
+                } else {
+                    setErrorMessage("Something went wrong.");
+                }
             }
         }
         else {
@@ -95,7 +101,7 @@ const UserProfilePage: React.FC = () => {
             <div className={styles.container}>
                 {loadingProfile && <p>Loading profile...</p>}
                 {errorProfile && <p className={styles.error}>{errorProfile}</p>}
-                {userProfile && (
+                {userProfile && !loadingProfile && (
                     <div className={styles.profileInfo}>
                         {editMode ? (
                             <>
@@ -155,6 +161,7 @@ const UserProfilePage: React.FC = () => {
                                 {userProfile.bio ? <p>{userProfile.bio}</p> : <p>No bio available</p>}
                             </>
                         )}
+                        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
                         < button
                             className={editMode ? styles.saveButton : styles.editButton}
                             onClick={handleEditOrSave} >
@@ -165,21 +172,7 @@ const UserProfilePage: React.FC = () => {
                 <hr />
                 <h3>Your Posts</h3>
                 {loadingPosts && <p>Loading posts...</p>}
-                {errorPosts && <p className={styles.error}>{errorPosts}</p>}
-                {/* <div className={styles.grid}>
-                    {userPosts.map((post) => (
-                        <div key={post.id} className={styles.postCard}>
-                            {post.photos[0] && (
-                                <img
-                                    src={post.photos[0].imageUrl}
-                                    alt="Post Preview"
-                                    className={styles.postImage}
-                                    onClick={() => navigate(`/posts/${post.id}`)}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div> */}
+                {errorPosts && <p className={styles.errorß}>{errorPosts}</p>}
                 {userPosts.length === 0 ? (
                     <p className={styles.noPostsMessage}>
                         No posts yet – start sharing your moments!
