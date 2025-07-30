@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import styles from "../styles/UserProfilePage.module.css";
 import { UserProfile, RawPostFromQuery } from "../interfaces/interfaces";
@@ -12,6 +12,7 @@ const SpecificUserProfilePage: React.FC = () => {
     const [posts, setPosts] = useState<RawPostFromQuery[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -76,6 +77,7 @@ const SpecificUserProfilePage: React.FC = () => {
                                         src={post.photos[0].imageUrl}
                                         alt="Post Preview"
                                         className={styles.postImage}
+                                        onClick={() => navigate(`/posts/${post.id}`)}
                                     />
                                 )}
                             </div>

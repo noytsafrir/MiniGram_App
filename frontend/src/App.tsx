@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import CreatePostPage from './pages/CreatePostPage';
 import UserProfilePage from './pages/UserProfilePage';
 import SpecificUserProfilePage from "./pages/SpecificUserProfilePage";
+import PostDetailsPage from './pages/PostDetailsPage';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -21,6 +22,8 @@ const App: React.FC = () => {
         <Route path="/create" element={isAuthenticated ? <CreatePostPage /> : <Navigate to="/login" />} />
         <Route path="/profile" element={isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />} />
         <Route path="/users/:userId" element={<SpecificUserProfilePage />} />
+        <Route path="/posts/:postId" element={<PostDetailsPage/>} />
+
       </Routes>
     </Router>
   );

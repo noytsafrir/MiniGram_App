@@ -18,8 +18,8 @@ import axios from "../api/axios";
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   const { user, photos, caption } = post;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const likes = post.likes;
-  const isLiked = post.isLiked;
+  // const likes = post.likes;
+  // const isLiked = post.isLiked;
   const isSaved = post.isSaved;
   const totalImages = photos.length;
   const timeAgo = moment(post.createdAt).fromNow();
@@ -36,8 +36,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
   };
 
   const handleLikeClick = async () => {
+    if (onLike) {
+      onLike(post.id);
+      return;
+    }
     const token = localStorage.getItem("token");
-    const newLikedState = !isLiked;
+    const newLikedState = !post.isLiked;
     dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
 
     try {
@@ -51,11 +55,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
       );
     } catch (err) {
       console.error("Failed to toggle like:", err);
-      dispatch(setLikeStatusForPost({ postId: post.id, isLiked: newLikedState }));
     }
   };
 
   const handleSaveClick = async () => {
+    if (onSave) {
+      onSave(post.id);
+      return;
+    }
     const token = localStorage.getItem("token");
     const newSaveState = !isSaved;
     dispatch(setSaveStatusForPost({ postId: post.id, isSaved: newSaveState }));
@@ -67,7 +74,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      onSave();
     } catch (err) {
       console.error("Failed to save post:", err);
     }
@@ -88,7 +94,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
         <div>
           <Link to={`/users/${user.id}`} className={styles.username}>
             {user.username}
-          </Link>          
+          </Link>
           <div className={styles.timestamp}>{timeAgo}</div>
         </div>
       </div>
@@ -131,8 +137,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onSave }) => {
       {/* Actions */}
       <div className={styles.actions}>
         <div className={styles.actionItem} onClick={handleLikeClick}>
-          <span>{likes}</span>
-          {isLiked ? <FaHeart color="red" /> : <FaRegHeart />}
+          <span>{post.likes ?? 0}</span>
+          {post.isLiked ? <FaHeart color="red" /> : <FaRegHeart />}
         </div>
 
 

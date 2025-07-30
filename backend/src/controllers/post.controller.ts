@@ -111,13 +111,13 @@ export const getUserPosts = async (req: Request, res: Response) => {
   }
 };
 
- export const getPostsByUserId = async (req: Request, res: Response) => {
-  const { userId }  = req.params;
-  try{
+export const getPostsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
     const posts = await prisma.post.findMany({
-      where: { userId : Number(userId) },
+      where: { userId: Number(userId) },
       include: {
-        user: true, 
+        user: true,
         photos: true,
       },
       orderBy: {
@@ -127,10 +127,53 @@ export const getUserPosts = async (req: Request, res: Response) => {
     if (!posts || posts.length === 0) {
       return res.status(404).json({ message: "No posts found for this user" });
     }
-   
+
     res.status(200).json(posts);
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ error: "Failed to fetch user's posts." });
+  }
+};
+
+export const getPostById = async (req: Request, res: Response) => {
+  const  postId = parseInt(req.params.postId);
+  const userId = req.user?.id;
+
+  if (!userId) return res.status(401).json({ message: "Unauthorized" });
+  if (isNaN(postId)) return res.status(400).json({ message: "Invalid postId" });
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      include: {
+        photos: true,
+        likes: { select: { userId: true } },
+        saves: { select: { userId: true } },
+        user: {
+          select: { id: true, username: true, profileImg: true },
+        },
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const likesCount = post.likes.length;
+    const isLiked = post.likes.some((like) => like.userId === userId);
+    const isSaved = post.saves.some((save) => save.userId === userId);
+   
+    const postResponse = {
+      ...post,
+      likes: likesCount,
+      isLiked,
+      isSaved,
+    };
+
+
+    res.json(postResponse);
+  } catch (error) {
+    console.error("Error fetching post: ", error);
+    res.status(500).json({ error: "Failed to fetch the specific post." });
   }
 };
 
@@ -141,15 +184,21 @@ export const toggleLikePost = async (req: Request, res: Response) => {
 
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
   if (isNaN(postId)) return res.status(400).json({ message: "Invalid postId" });
+  console.log("Toggle like payload:", { postId, userId: req.user?.id, body: req.body });
 
   try {
     if (isLiked) {
-      await prisma.like.create({
-        data: {
+      const existingLike = await prisma.like.findFirst({
+        where: {
           postId,
           userId,
         },
       });
+      if (!existingLike) {
+        await prisma.like.create({
+          data: { postId, userId },
+        });
+      }
     } else {
       await prisma.like.deleteMany({
         where: {

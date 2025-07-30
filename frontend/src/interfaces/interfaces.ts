@@ -32,8 +32,8 @@ export interface RawPostFromQuery {
 
 export interface PostCardProps {
   post: RawPostFromQuery;
-  onLike: (postId: string, shouldLike: boolean) => void;
-  onSave: () => void;
+  onLike?: (postId: string) => void;
+  onSave?: (postId: string) => void;
 }
 
 export interface PostState {

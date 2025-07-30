@@ -42,10 +42,6 @@ const HomePage: React.FC = () => {
   const firstName = user?.firstName;
   const lastName = user?.lastName;
 
-  const handleSave = (postId: string) => {
-    console.log(`Saved post with ID: ${postId}`);
-  };
-
   return (
     <AppLayout>
       <div className={styles.container}>
@@ -59,8 +55,6 @@ const HomePage: React.FC = () => {
               <PostCard
                 key={post.id}
                 post={post}
-                onLike={(postId) => console.log(`Liked post with ID: ${postId}`)}
-                onSave={() => handleSave(post.id)}
               />
             ))
           ) : (
