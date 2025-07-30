@@ -111,6 +111,29 @@ export const getUserPosts = async (req: Request, res: Response) => {
   }
 };
 
+ export const getPostsByUserId = async (req: Request, res: Response) => {
+  const { userId }  = req.params;
+  try{
+    const posts = await prisma.post.findMany({
+      where: { userId : Number(userId) },
+      include: {
+        user: true, 
+        photos: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({ message: "No posts found for this user" });
+    }
+   
+    res.status(200).json(posts);
+  }catch (error) {
+    res.status(500).json({ error: "Failed to fetch user's posts." });
+  }
+};
+
 export const toggleLikePost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId);
   const { isLiked } = req.body;

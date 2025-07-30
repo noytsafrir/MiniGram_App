@@ -62,3 +62,29 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const getUserProfileById = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const id = Number(userId);
+  if (isNaN(id)) {
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        profileImg: true,
+        bio: true,
+      },
+    });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("[Get User Profile By ID Error]", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
